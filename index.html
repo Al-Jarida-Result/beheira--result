@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>جريدة أخبار البحيرة | نتائج الشهادة الإعدادية 2026</title>
+    <meta name="description" content="استعلم الآن عن نتيجة الشهادة الإعدادية بمحافظة البحيرة لعام 2026 برقم الجلوس. بوابة نتائج إدارة المحمودية ودمنهور وكفر الدوار.">
+    <meta name="keywords" content="نتيجة الشهادة الاعدادية محافظة البحيرة, نتيجة اعدادية البحيرة 2026, إياد صفوت حرازي, مدرسة ديروط الاعدادية, برقم الجلوس">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        :root { --beh-green: #007f5f; --dark-green: #1b4332; --light-gray: #f8f9fa; --gold: #ffc107; --red: #d90429; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; background: var(--light-gray); color: #333; }
+        
+        .breaking-news { background: var(--red); color: white; padding: 10px; text-align: center; font-weight: bold; font-size: 0.9rem; }
+        .header { background: white; padding: 20px; text-align: center; border-bottom: 5px solid var(--beh-green); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .header h1 { margin: 0; color: var(--beh-green); font-size: 1.8rem; }
+        
+        .container { max-width: 480px; margin: 20px auto; padding: 0 15px; }
+
+        /* عداد الحماس */
+        .live-counter { background: #fff3f3; color: var(--red); padding: 10px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 15px; border: 1px solid #ffcccc; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: bold; }
+        .dot { width: 8px; height: 8px; background: var(--red); border-radius: 50%; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        .card { background: white; border-radius: 12px; border: 1px solid #ddd; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
+        .card-header { background: var(--dark-green); color: white; padding: 15px; text-align: center; font-weight: bold; }
+        .form-body { padding: 30px; text-align: center; }
+        input { width: 85%; padding: 15px; border: 2px solid #eee; border-radius: 8px; margin-bottom: 15px; text-align: center; font-size: 1.2rem; }
+        .btn { background: var(--beh-green); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
+        
+        #resultArea { display: none; }
+        .student-header { background: var(--beh-green); color: white; padding: 20px; text-align: right; line-height: 1.8; }
+        .row { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; }
+        .total-box { background: var(--gold); color: #000; font-weight: 900; font-size: 1.4rem; border-radius: 8px; margin: 10px 0; }
+        
+        .qr-box { text-align: center; padding: 20px; background: #fafafa; border-top: 1px dashed #ccc; }
+        
+        @media print { .no-print { display: none !important; } #resultArea { display: block !important; border: 1px solid #000; } }
+    </style>
+</head>
+<body>
+
+<div class="breaking-news">عاجل: محافظ البحيرة يعتمد نتيجة الشهادة الإعدادية لعام 2026 بنسبة نجاح 82.5%</div>
+
+<header class="header">
+    <h1>أخبار <span>البحيرة</span> التعليمية</h1>
+</header>
+
+<div class="container">
+    <div class="live-counter no-print">
+        <span class="dot"></span>
+        يتابع النتائج الآن: 250,482 شخص عبر السيرفر
+    </div>
+
+    <div id="searchBox" class="card no-print">
+        <div class="card-header">بوابة نتائج البحيرة | الشهادة الإعدادية</div>
+        <div class="form-body">
+            <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">أدخل رقم الجلوس للاستعلام الفوري</p>
+            <input type="number" id="seatNum" placeholder="مثال: 10865">
+            <button class="btn" onclick="search()">عرض النتيجة</button>
+            <p style="font-size: 0.75rem; color: #999; margin-top: 15px;">نطاق البحث المتاح: 10000 - 70000</p>
+        </div>
+    </div>
+
+    <div id="resultArea" class="card">
+        <div class="student-header">
+            <div style="font-size: 0.8rem; opacity: 0.9; margin-bottom: 5px;">بيان نجاح رسمي - محافظة البحيرة</div>
+            <b id="resName"></b> <br>
+            <b>رقم الجلوس:</b> <span id="resSeat"></span> <br>
+            <b>المدرسة:</b> <span id="resSchool"></span> <br>
+            <b>الإدارة:</b> المحمودية التعليمية
+        </div>
+        
+        <div style="padding: 15px;">
+            <div class="row total-box"><span>المجموع الكلي</span> <span id="resTotal"></span></div>
+            <div class="row"><span>اللغة العربية</span> <b id="resAr"></b></div>
+            <div class="row"><span>الرياضيات</span> <b id="resMa"></b></div>
+            <div class="row"><span>اللغة الإنجليزية</span> <b id="resEn"></b></div>
+            <div class="row"><span>العلوم</span> <b id="resSc"></b></div>
+            <div class="row"><span>الدراسات الاجتماعية</span> <b id="resSo"></b></div>
+            <div class="row" style="color: #198754; font-weight: bold; border: none;"><span>حالة الطالب</span> <span>ناجح (الدور الأول)</span></div>
+        </div>
+
+        <div class="qr-box">
+            <div id="qrcode" style="display:inline-block"></div>
+            <p style="font-size: 10px; color: #888; margin-top: 8px;">التوثيق الرقمي لمديرية التربية والتعليم © 2026</p>
+        </div>
+
+        <div class="form-body no-print" style="padding: 15px;">
+            <button class="btn" style="background: #198754;" onclick="window.print()">تحميل الشهادة PDF</button>
+            <button onclick="location.reload()" style="width:100%; border:1px solid #ccc; background:none; padding:10px; margin-top:10px; border-radius:8px; cursor:pointer; font-weight: bold;">بحث جديد</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function search() {
+        const val = document.getElementById('seatNum').value;
+        const sn = parseInt(val);
+        let s;
+
+        // 1. بيانات إياد صفوت (محدثة حسب طلبك)
+        if (sn === 10865) {
+            s = {
+                name: "إياد صفوت حرازي عوض",
+                school: "ديروط الاعدادية المشتركة",
+                total: "113 / 140",
+                ar: "32", ma: "30", en: "23", sc: "13", so: "15"
+            };
+        } 
+        // 2. نظام الـ 60 ألف طالب عشوائي (نطاق 10000 - 70000)
+        else if (sn >= 10000 && sn <= 70000) {
+            const fNames = ["أحمد", "ياسين", "إبراهيم", "زياد", "محمد", "علي", "محمود", "خالد", "مريم", "سارة"];
+            const mNames = ["صفوت", "حرازي", "عوض", "حسن", "السيد", "محسن", "رضا"];
+            
+            s = {
+                name: fNames[sn % 10] + " " + mNames[(sn % 7)] + " " + mNames[((sn+2)%7)] + " عوض",
+                school: "ديروط الاعدادية",
+                total: (95 + (sn % 40)) + " / 140",
+                ar: 25 + (sn % 15), ma: 15 + (sn % 15), en: 15 + (sn % 15), sc: 10 + (sn % 10), so: 10 + (sn % 10)
+            };
+        }
+
+        if (s) {
+            document.getElementById('resName').innerText = s.name;
+            document.getElementById('resSeat').innerText = val;
+            document.getElementById('resSchool').innerText = s.school;
+            document.getElementById('resTotal').innerText = s.total;
+            document.getElementById('resAr').innerText = s.ar;
+            document.getElementById('resMa').innerText = s.ma;
+            document.getElementById('resEn').innerText = s.en;
+            document.getElementById('resSc').innerText = s.sc;
+            document.getElementById('resSo').innerText = s.so;
+
+            document.getElementById('searchBox').style.display = 'none';
+            document.getElementById('resultArea').style.display = 'block';
+
+            document.getElementById("qrcode").innerHTML = "";
+            new QRCode(document.getElementById("qrcode"), { text: window.location.href, width: 90, height: 90 });
+        } else {
+            alert("عفواً، رقم الجلوس غير صحيح.");
+        }
+    }
+</script>
+</body>
+</html>
