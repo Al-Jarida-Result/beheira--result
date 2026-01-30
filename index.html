@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أخبار البحيرة | نتيجة الشهادة الإعدادية 2026</title>
+    <title>بوابة نتائج البحيرة | الشهادة الإعدادية 2026</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
     <style>
         :root { --beh-green: #007f5f; --dark-green: #1b4332; --light-gray: #f8f9fa; --gold: #ffc107; --red: #d90429; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; background: var(--light-gray); color: #333; }
@@ -30,7 +32,7 @@
 </head>
 <body>
 
-<div class="breaking-news">عاجل: اعتماد نتيجة الشهادة الإعدادية بمحافظة البحيرة لعام 2026 بنسبة نجاح 82.5%</div>
+<div class="breaking-news">عاجل: مديرية التربية والتعليم بالبحيرة تعلن نتائج الشهادة الإعدادية لعام 2026</div>
 
 <header class="header">
     <h1>أخبار <span>البحيرة</span> التعليمية</h1>
@@ -43,7 +45,7 @@
     </div>
 
     <div id="searchBox" class="card no-print">
-        <div class="card-header">بوابة نتائج البحيرة | استعلام فوري</div>
+        <div class="card-header">بوابة نتائج محافظة البحيرة | استعلام فوري</div>
         <div class="form-body">
             <input type="number" id="seatNum" placeholder="أدخل رقم الجلوس">
             <button class="btn" onclick="search()">عرض النتيجة</button>
@@ -83,11 +85,11 @@
 
 <script>
     function search() {
-        const val = document.getElementById('seatNum').value;
+        const val = document.getElementById('seatNum').value.trim();
         const sn = parseInt(val);
         let s;
 
-        // الطالب الأول: محمد نبيل
+        // 1. بيانات محمد نبيل (رقم 128154)
         if (sn === 128154) {
             s = {
                 name: "محمد نبيل عبدالعاطي خليفه",
@@ -97,7 +99,7 @@
                 ar: "32", ma: "23", en: "27", sc: "13", so: "15"
             };
         } 
-        // الطالب الثاني: إياد صفوت
+        // 2. بيانات إياد صفوت (رقم 10865)
         else if (sn === 10865) {
             s = {
                 name: "إياد صفوت حرازي عوض",
@@ -107,14 +109,16 @@
                 ar: "32", ma: "30", en: "23", sc: "13", so: "15"
             };
         }
-        // نظام الـ 60 ألف طالب عشوائي
-        else if (sn >= 10000 && sn <= 200000) {
+        // 3. نظام التوليد التلقائي لباقي الطلاب
+        else if (sn >= 10000 && sn <= 700000) {
+            const fNames = ["أحمد", "ياسين", "إبراهيم", "زياد", "محمد", "علي", "محمود", "خالد", "مريم", "سارة"];
+            const mNames = ["صفوت", "حرازي", "عوض", "حسن", "السيد", "محسن", "رضا"];
             s = {
-                name: "طالب بحراوي رقم " + sn,
+                name: fNames[sn % 10] + " " + mNames[(sn % 7)] + " " + mNames[((sn+2)%7)] + " خليفه",
                 school: "مدرسة البحيرة الإعدادية",
-                admin: "إدارة البحيرة التعليمية",
-                total: "105 / 140",
-                ar: "30", ma: "25", en: "20", sc: "15", so: "15"
+                admin: "البحيرة التعليمية",
+                total: (95 + (sn % 40)) + " / 140",
+                ar: 25 + (sn % 15), ma: 15 + (sn % 15), en: 15 + (sn % 15), sc: 10 + (sn % 10), so: 10 + (sn % 10)
             };
         }
 
