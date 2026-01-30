@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نتائج البحيرة 2026</title>
+    <title>بوابة نتائج البحيرة 2026</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root { --beh-green: #007f5f; --dark-green: #1b4332; --gold: #ffc107; --red: #d90429; }
@@ -12,22 +12,26 @@
         .container { max-width: 480px; margin: 20px auto; padding: 0 15px; }
         .card { background: white; border-radius: 12px; border: 1px solid #ddd; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
         .card-header { background: var(--dark-green); color: white; padding: 15px; text-align: center; font-weight: bold; }
-        input { width: 85%; padding: 15px; border: 2px solid #eee; border-radius: 8px; margin: 15px 0; text-align: center; font-size: 1.2rem; }
+        .form-body { padding: 30px; text-align: center; }
+        input { width: 85%; padding: 15px; border: 2px solid #eee; border-radius: 8px; margin-bottom: 15px; text-align: center; font-size: 1.2rem; }
         .btn { background: var(--beh-green); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
         #resultArea { display: none; }
-        .student-header { background: var(--beh-green); color: white; padding: 20px; text-align: right; }
+        .student-header { background: var(--beh-green); color: white; padding: 20px; text-align: right; line-height: 1.8; }
         .row { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; }
         .total-box { background: var(--gold); color: #000; font-weight: 900; font-size: 1.4rem; border-radius: 8px; margin: 10px; padding: 10px; text-align: center; }
+        .qr-box { text-align: center; padding: 20px; background: #fafafa; }
     </style>
 </head>
 <body>
 
-<header class="header"><h1>بوابة نتائج <span>البحيرة</span></h1></header>
+<header class="header">
+    <h1>أخبار <span>البحيرة</span> التعليمية</h1>
+</header>
 
 <div class="container">
     <div id="searchBox" class="card">
-        <div class="card-header">استعلام عن النتيجة</div>
-        <div style="padding: 20px; text-align: center;">
+        <div class="card-header">استعلام نتائج الشهادة الإعدادية</div>
+        <div class="form-body">
             <input type="number" id="seatNum" placeholder="أدخل رقم الجلوس">
             <button class="btn" onclick="search()">عرض النتيجة</button>
         </div>
@@ -35,18 +39,33 @@
 
     <div id="resultArea" class="card">
         <div class="student-header">
+            <div style="font-size: 0.8rem; opacity: 0.9;">بيان نجاح رسمي</div>
             <b id="resName" style="font-size: 1.2rem;"></b> <br>
             <b>رقم الجلوس:</b> <span id="resSeat"></span> <br>
             <b>المدرسة:</b> <span id="resSchool"></span> <br>
             <b>الإدارة:</b> <span id="resAdmin"></span>
         </div>
+        
         <div class="total-box">المجموع الكلي: <span id="resTotal"></span></div>
-        <div class="row"><span>اللغة العربية</span> <b id="resAr"></b></div>
-        <div class="row"><span>الرياضيات</span> <b id="resMa"></b></div>
-        <div class="row"><span>اللغة الإنجليزية</span> <b id="resEn"></b></div>
-        <div class="row"><span>العلوم</span> <b id="resSc"></b></div>
-        <div class="row"><span>الدراسات</span> <b id="resSo"></b></div>
-        <button onclick="location.reload()" style="width:100%; padding:15px; border:none; background:#eee; cursor:pointer;">بحث جديد</button>
+        
+        <div style="padding: 10px;">
+            <div class="row"><span>اللغة العربية</span> <b id="resAr"></b></div>
+            <div class="row"><span>الرياضيات</span> <b id="resMa"></b></div>
+            <div class="row"><span>اللغة الإنجليزية</span> <b id="resEn"></b></div>
+            <div class="row"><span>العلوم</span> <b id="resSc"></b></div>
+            <div class="row"><span>الدراسات الاجتماعية</span> <b id="resSo"></b></div>
+            <div class="row" style="color: green; font-weight: bold;"><span>حالة الطالب</span> <span>ناجح</span></div>
+        </div>
+
+        <div class="qr-box">
+            <div id="qrcode" style="display:inline-block"></div>
+            <p style="font-size: 10px; color: #888;">موثق إلكترونياً © 2026</p>
+        </div>
+
+        <div style="padding: 15px;">
+            <button class="btn" onclick="window.print()" style="background: #198754; margin-bottom: 10px;">طباعة النتيجة</button>
+            <button onclick="location.reload()" style="width:100%; border:1px solid #ccc; background:none; padding:10px; border-radius:8px; cursor:pointer;">بحث عن رقم آخر</button>
+        </div>
     </div>
 </div>
 
@@ -56,13 +75,39 @@
         const sn = parseInt(val);
         let s;
 
-        // قاعدة بيانات الطلاب الثابتة
-        if (sn === 128154) {
-            s = { name: "محمد نبيل عبدالعاطي خليفه", school: "خورشيد لتعليم الاساسي", admin: "الدلنجات التعليمية", total: "110 / 140", ar: "32", ma: "23", en: "27", sc: "13", so: "15" };
-        } else if (sn === 10865) {
-            s = { name: "إياد صفوت حرازي عوض", school: "ديروط الاعدادية المشتركة", admin: "المحمودية التعليمية", total: "113 / 140", ar: "32", ma: "30", en: "23", sc: "13", so: "15" };
-        } else if (sn >= 10000 && sn <= 200000) {
-            s = { name: "طالب بحراوي ناجح", school: "مدرسة البحيرة الإعدادية", admin: "إدارة البحيرة", total: "105 / 140", ar: "30", ma: "25", en: "20", sc: "15", so: "15" };
+        // --- الطالب: إياد صفوت (الدرجات الجديدة) ---
+        if (sn === 10865) {
+            s = {
+                name: "إياد صفوت حرازي عوض",
+                school: "ديروط الاعدادية المشتركة",
+                admin: "المحمودية التعليمية",
+                total: "129.5 / 140",
+                ar: "37", 
+                ma: "30", 
+                en: "25", 
+                sc: "18.5", 
+                so: "19"
+            };
+        } 
+        // --- الطالب: محمد نبيل ---
+        else if (sn === 128154) {
+            s = {
+                name: "محمد نبيل عبدالعاطي خليفه",
+                school: "خورشيد لتعليم الاساسي",
+                admin: "الدلنجات التعليمية",
+                total: "110 / 140",
+                ar: "32", ma: "23", en: "27", sc: "13", so: "15"
+            };
+        }
+        // --- مولد الطلاب العشوائي ---
+        else if (sn >= 10000 && sn <= 700000) {
+            s = {
+                name: "طالب بحراوي ناجح",
+                school: "مدرسة البحيرة الإعدادية",
+                admin: "إدارة البحيرة",
+                total: "105 / 140",
+                ar: "30", ma: "25", en: "22", sc: "14", so: "14"
+            };
         }
 
         if (s) {
@@ -78,8 +123,10 @@
             document.getElementById('resSo').innerText = s.so;
             document.getElementById('searchBox').style.display = 'none';
             document.getElementById('resultArea').style.display = 'block';
+            document.getElementById("qrcode").innerHTML = "";
+            new QRCode(document.getElementById("qrcode"), { text: window.location.href, width: 80, height: 80 });
         } else {
-            alert("رقم الجلوس غير موجود.");
+            alert("رقم الجلوس غير صحيح.");
         }
     }
 </script>
