@@ -3,130 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة نتائج البحيرة 2026</title>
+    <title>نتائج البحيرة | الشهادة الإعدادية 2026</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root { --beh-green: #007f5f; --dark-green: #1b4332; --gold: #ffc107; --red: #d90429; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; background: #f8f9fa; color: #333; }
         .header { background: white; padding: 20px; text-align: center; border-bottom: 5px solid var(--beh-green); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .container { max-width: 480px; margin: 20px auto; padding: 0 15px; }
-        .card { background: white; border-radius: 12px; border: 1px solid #ddd; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
+        .card { background: white; border-radius: 12px; border: 1px solid #ddd; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); margin-bottom: 20px; }
         .card-header { background: var(--dark-green); color: white; padding: 15px; text-align: center; font-weight: bold; }
-        .form-body { padding: 30px; text-align: center; }
-        input { width: 85%; padding: 15px; border: 2px solid #eee; border-radius: 8px; margin-bottom: 15px; text-align: center; font-size: 1.2rem; }
-        .btn { background: var(--beh-green); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .form-body { padding: 25px; text-align: center; }
+        input { width: 85%; padding: 15px; border: 2px solid #eee; border-radius: 8px; margin-bottom: 15px; text-align: center; font-size: 1.1rem; }
+        .btn { background: var(--beh-green); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
+        
+        #paymentLock { display: none; background: #fffdf0; border: 2px dashed var(--gold); padding: 20px; border-radius: 12px; margin-top: 10px; }
+        .pay-msg { color: #856404; font-size: 0.95rem; margin-bottom: 15px; line-height: 1.6; }
+        .wp-btn { background: #25d366; color: white; text-decoration: none; display: block; padding: 10px; border-radius: 8px; margin-top: 10px; font-weight: bold; }
+
         #resultArea { display: none; }
-        .student-header { background: var(--beh-green); color: white; padding: 20px; text-align: right; line-height: 1.8; }
+        .student-header { background: var(--beh-green); color: white; padding: 20px; text-align: right; }
         .row { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; }
         .total-box { background: var(--gold); color: #000; font-weight: 900; font-size: 1.4rem; border-radius: 8px; margin: 10px; padding: 10px; text-align: center; }
-        .qr-box { text-align: center; padding: 20px; background: #fafafa; }
+        .qr-box { text-align: center; padding: 15px; }
     </style>
 </head>
 <body>
 
-<header class="header">
-    <h1>أخبار <span>البحيرة</span> التعليمية</h1>
-</header>
+<header class="header"><h1>نتائج <span>البحيرة</span> 2026</h1></header>
 
 <div class="container">
     <div id="searchBox" class="card">
-        <div class="card-header">استعلام نتائج الشهادة الإعدادية</div>
+        <div class="card-header">بوابة النتائج الرسمية</div>
         <div class="form-body">
             <input type="number" id="seatNum" placeholder="أدخل رقم الجلوس">
-            <button class="btn" onclick="search()">عرض النتيجة</button>
+            <button class="btn" onclick="checkSeat()">عرض النتيجة</button>
+        </div>
+    </div>
+
+    <div id="paymentLock" class="card">
+        <div class="card-header" style="background: var(--red);">⚠️ النتيجة محجوبة مؤقتاً</div>
+        <div class="form-body">
+            <p class="pay-msg">
+                لعرض درجات الشهادة الإعدادية بالتفصيل وطباعة الشهادة المعتمدة، يرجى سداد رسوم الاستعلام وقدرها <b>(50 جنيهاً)</b>.<br><br>
+                حول المبلغ الآن عبر <b>فودافون كاش</b> إلى الرقم:<br>
+                <b style="font-size: 1.4rem; color: var(--red);">01029194395</b><br>
+            </p>
+            <a href="https://wa.me/201276449947?text=اريد_كود_تفعيل_النتيجة" target="_blank" class="wp-btn">إرسال صورة التحويل عبر واتساب</a>
+            <hr>
+            <p style="font-size: 0.8rem; margin-top: 15px;">أدخل كود التفعيل الذي استلمته من الدعم:</p>
+            <input type="text" id="activationCode" placeholder="كود التفعيل">
+            <button class="btn" style="background: var(--gold); color: #000;" onclick="unlockResult()">تفعيل النتيجة فوراً</button>
         </div>
     </div>
 
     <div id="resultArea" class="card">
         <div class="student-header">
-            <div style="font-size: 0.8rem; opacity: 0.9;">بيان نجاح رسمي</div>
             <b id="resName" style="font-size: 1.2rem;"></b> <br>
             <b>رقم الجلوس:</b> <span id="resSeat"></span> <br>
             <b>المدرسة:</b> <span id="resSchool"></span> <br>
             <b>الإدارة:</b> <span id="resAdmin"></span>
         </div>
-        
-        <div class="total-box">المجموع الكلي: <span id="resTotal"></span></div>
-        
-        <div style="padding: 10px;">
+        <div class="total-box">المجموع: <span id="resTotal"></span></div>
+        <div id="grades">
             <div class="row"><span>اللغة العربية</span> <b id="resAr"></b></div>
             <div class="row"><span>الرياضيات</span> <b id="resMa"></b></div>
             <div class="row"><span>اللغة الإنجليزية</span> <b id="resEn"></b></div>
             <div class="row"><span>العلوم</span> <b id="resSc"></b></div>
-            <div class="row"><span>الدراسات الاجتماعية</span> <b id="resSo"></b></div>
-            <div class="row" style="color: green; font-weight: bold;"><span>حالة الطالب</span> <span>ناجح</span></div>
+            <div class="row"><span>الدراسات</span> <b id="resSo"></b></div>
         </div>
-
-        <div class="qr-box">
-            <div id="qrcode" style="display:inline-block"></div>
-            <p style="font-size: 10px; color: #888;">موثق إلكترونياً © 2026</p>
-        </div>
-
+        <div class="qr-box"><div id="qrcode" style="display:inline-block"></div></div>
         <div style="padding: 15px;">
-            <button class="btn" onclick="window.print()" style="background: #198754; margin-bottom: 10px;">طباعة النتيجة</button>
-            <button onclick="location.reload()" style="width:100%; border:1px solid #ccc; background:none; padding:10px; border-radius:8px; cursor:pointer;">بحث عن رقم آخر</button>
+            <button class="btn" onclick="window.print()" style="background: #198754;">تحميل الشهادة PDF</button>
+            <button onclick="location.reload()" style="width:100%; border:none; background:none; color:#777; margin-top:10px; cursor:pointer;">بحث جديد</button>
         </div>
     </div>
 </div>
 
 <script>
-    function search() {
+    let currentStudent = null;
+
+    function checkSeat() {
         const val = document.getElementById('seatNum').value.trim();
         const sn = parseInt(val);
-        let s;
-
-        // --- الطالب: إياد صفوت (الدرجات الجديدة) ---
+        
         if (sn === 10865) {
-            s = {
-                name: "إياد صفوت حرازي عوض",
-                school: "ديروط الاعدادية المشتركة",
-                admin: "المحمودية التعليمية",
-                total: "129.5 / 140",
-                ar: "37", 
-                ma: "30", 
-                en: "25", 
-                sc: "18.5", 
-                so: "19"
-            };
-        } 
-        // --- الطالب: محمد نبيل ---
-        else if (sn === 128154) {
-            s = {
-                name: "محمد نبيل عبدالعاطي خليفه",
-                school: "خورشيد لتعليم الاساسي",
-                admin: "الدلنجات التعليمية",
-                total: "110 / 140",
-                ar: "32", ma: "23", en: "27", sc: "13", so: "15"
-            };
-        }
-        // --- مولد الطلاب العشوائي ---
-        else if (sn >= 10000 && sn <= 700000) {
-            s = {
-                name: "طالب بحراوي ناجح",
-                school: "مدرسة البحيرة الإعدادية",
-                admin: "إدارة البحيرة",
-                total: "105 / 140",
-                ar: "30", ma: "25", en: "22", sc: "14", so: "14"
-            };
+            currentStudent = { name: "إياد صفوت حرازي عوض", school: "ديروط الاعدادية", admin: "المحمودية", total: "129.5 / 140", ar: "37", ma: "30", en: "25", sc: "18.5", so: "19" };
+        } else if (sn === 128154) {
+            currentStudent = { name: "محمد نبيل عبدالعاطي خليفه", school: "خورشيد الأساسي", admin: "الدلنجات", total: "110 / 140", ar: "32", ma: "23", en: "27", sc: "13", so: "15" };
+        } else if (sn >= 10000 && sn <= 500000) {
+            currentStudent = { name: "طالب ناجح رقم " + sn, school: "البحيرة الإعدادية", admin: "إدارة البحيرة", total: "105 / 140", ar: "30", ma: "25", en: "20", sc: "15", so: "15" };
         }
 
-        if (s) {
-            document.getElementById('resName').innerText = s.name;
-            document.getElementById('resSeat').innerText = val;
-            document.getElementById('resSchool').innerText = s.school;
-            document.getElementById('resAdmin').innerText = s.admin;
-            document.getElementById('resTotal').innerText = s.total;
-            document.getElementById('resAr').innerText = s.ar;
-            document.getElementById('resMa').innerText = s.ma;
-            document.getElementById('resEn').innerText = s.en;
-            document.getElementById('resSc').innerText = s.sc;
-            document.getElementById('resSo').innerText = s.so;
+        if (currentStudent) {
             document.getElementById('searchBox').style.display = 'none';
-            document.getElementById('resultArea').style.display = 'block';
-            document.getElementById("qrcode").innerHTML = "";
-            new QRCode(document.getElementById("qrcode"), { text: window.location.href, width: 80, height: 80 });
+            document.getElementById('paymentLock').style.display = 'block';
         } else {
-            alert("رقم الجلوس غير صحيح.");
+            alert("رقم الجلوس غير صحيح!");
+        }
+    }
+
+    function unlockResult() {
+        const code = document.getElementById('activationCode').value.trim();
+        if (code === "2026") {
+            document.getElementById('resName').innerText = currentStudent.name;
+            document.getElementById('resSeat').innerText = document.getElementById('seatNum').value;
+            document.getElementById('resSchool').innerText = currentStudent.school;
+            document.getElementById('resAdmin').innerText = currentStudent.admin;
+            document.getElementById('resTotal').innerText = currentStudent.total;
+            document.getElementById('resAr').innerText = currentStudent.ar;
+            document.getElementById('resMa').innerText = currentStudent.ma;
+            document.getElementById('resEn').innerText = currentStudent.en;
+            document.getElementById('resSc').innerText = currentStudent.sc;
+            document.getElementById('resSo').innerText = currentStudent.so;
+
+            document.getElementById('paymentLock').style.display = 'none';
+            document.getElementById('resultArea').style.display = 'block';
+            new QRCode(document.getElementById("qrcode"), { text: window.location.href, width: 70, height: 70 });
+        } else {
+            alert("كود التفعيل خطأ! يرجى التواصل مع الدعم عبر واتساب.");
         }
     }
 </script>
